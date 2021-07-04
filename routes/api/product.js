@@ -68,6 +68,40 @@ router.post('/add', [auth.Auth , auth.checkAdmin ,
             }
         })
 
+        router.put('/update', [auth.Auth , auth.checkAdmin ], async (req, res) => {
+
+            try {
+                let product = await Products.findById(req.body.id);
+                console.log(product)
+                 if(product !== null){
+                    if(req.body.product !== null){
+                        await Products.findByIdAndUpdate(req.body.id , {
+                            product : req.body.product
+                        });
+
+                    }
+
+                    if(req.body.price !== null){
+                        await Products.findByIdAndUpdate(req.body.id , {
+                            price : req.body.price
+                        });
+                    }
+                    
+                        return res.send({msg : "product updated"})
+
+                    
+                } else{
+                    res.status(400).send({msg : "product not found"})
+                }
+            } catch (err) {
+                console.log(err.message);
+                res.status(500).send("SERVER ERROR");
+            }
+        })
+
+
+        
+
         router.get('/', auth.Auth ,
         async (req, res) => {
             
@@ -76,6 +110,23 @@ router.post('/add', [auth.Auth , auth.checkAdmin ,
             try {
                 
                let product = await Products.find();
+                
+                    res.status(200).send(product)
+                
+            } catch (err) {
+                console.log(err.message);
+                res.status(500).send("SERVER ERROR");
+            }
+        })
+
+        router.get('/byId', auth.Auth ,
+        async (req, res) => {
+            
+            
+    
+            try {
+                
+               let product = await Products.findById(req.body.id);
                 
                     res.status(200).send(product)
                 
